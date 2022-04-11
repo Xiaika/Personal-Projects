@@ -1,0 +1,32 @@
+from bottle import route, run, request, get, static_file
+
+@route('/message')
+def hello():
+    return "today is a beautiful day"
+
+@route('/cars')
+def getCars():
+
+    cars = [ {'name': 'Audi', 'price': 52642},
+        {'name': 'Mercedes', 'price': 57127},
+        {'name': 'Skoda', 'price': 9000},
+        {'name': 'Volvo', 'price': 29000},
+        {'name': 'Bentley', 'price': 350000},
+        {'name': 'Citroen', 'price': 21000},
+        {'name': 'Hummer', 'price': 41400},
+        {'name': 'Volkswagen', 'price': 21600} ]
+
+    return dict(data=cars)
+
+@get('/msg')
+def message():
+    name = request.query.name
+    age = request.query.age
+
+    return f"{name} is {age} years old."
+
+@route('/<filepath:path>')
+def server_static(filepath):
+    return static_file(filepath, root='./public/')
+
+run(host="localhost", port=8080, debug=True)
