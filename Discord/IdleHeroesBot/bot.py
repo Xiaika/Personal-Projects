@@ -41,59 +41,67 @@ client = Bot(command_prefix=command_prefix, intents=intents)
 
 @client.command()
 async def options(ctx):
-    view = OptionsRoleView()
-    await ctx.send('Click a button to get a role. Click again to remove a role.'
-                   '\n**__Global Multipliers and Spheres__**', view=view)
-
+    if ctx.message.author.id == 832430593505361950:
+        view = OptionsRoleView()
+        await ctx.send('Click a button to get a role. Click again to remove a role.'
+                       '\n**__Global Multipliers and Spheres__**', view=view)
 
 
 @client.command()
 async def vip(ctx):
-    view = VipRoleView()
-    await ctx.send('\n**__VIP Level and Chest Preferences__**', view=view)
+    if ctx.message.author.id == 225760022737584128:
+        view = VipRoleView()
+        await ctx.send('\n**__VIP Level and Chest Preferences__**', view=view)
 
 
 @client.command()
 async def vortex(ctx):
-    view2 = VortexRoleView()
-    await ctx.send('\n**__Vortex Tiers__**', view=view2)
+    if ctx.message.author.id == 225760022737584128:
+        view2 = VortexRoleView()
+        await ctx.send('\n**__Vortex Tiers__**', view=view2)
 
 
 @client.command()
 async def realm(ctx):
-    view3 = RealmsRoleView()
-    await ctx.send('\n**__Realms Gate Corruption Levels__**', view=view3)
+    if ctx.message.author.id == 225760022737584128:
+        view3 = RealmsRoleView()
+        await ctx.send('\n**__Realms Gate Corruption Levels__**', view=view3)
 
 @client.command()
 async def tussi(ctx):
-    await ctx.send(BOT_INTRO)
-    await options(ctx)
-    await vip(ctx)
-    await vortex(ctx)
-    await realm(ctx)
+    if ctx.message.author.id == 225760022737584128:
+        await ctx.send(BOT_INTRO)
+        await options(ctx)
+        await vip(ctx)
+        await vortex(ctx)
+        await realm(ctx)
 
 
 @client.command()
 async def initialize(ctx: nextcord.ext.commands.Context):
     """Initializes the bot on a new server"""
-    for initial_role in INITIALIZE_ROLE_LIST:
-        name = initial_role[0]
-        color = initial_role[1]
-        for role in ctx.guild.roles:
-            if name == role.name:
-                print('ROLE ALREADY EXISTS')
+    if ctx.message.author.id == 225760022737584128:
+        for initial_role in INITIALIZE_ROLE_LIST:
+            name = initial_role[0]
+            color = initial_role[1]
+            for role in ctx.guild.roles:
+                if name == role.name:
+                    print('ROLE ALREADY EXISTS')
+                    break
+            else:
+                if color == 0:
+                    await ctx.guild.create_role(name=name, reason='Tussi needs it')
+                else:
+                    await ctx.guild.create_role(name=name, color=nextcord.Color(color), reason='Tussi needs it')
+        for channel in ctx.guild.channels:
+            if channel.name == 'tussi-role-assignment':
                 break
         else:
-            if color == 0:
-                await ctx.guild.create_role(name=name, reason='Tussi needs it')
-            else:
-                await ctx.guild.create_role(name=name, color=nextcord.Color(color), reason='Tussi needs it')
-
-    await ctx.guild.create_text_channel(name='tussi-role-assignment', reason='Tussi needs it')
-    await ctx.guild.create_text_channel(name='income-calculator', reason='To use Tussi :3')
-    # Get Tussi to post her buttons
-    channel = nextcord.utils.get(ctx.guild.channels, name='tussi-role-assignment')
-    print(f'Tussi is ready to go on {ctx.guild.name}')
+            await ctx.guild.create_text_channel(name='tussi-role-assignment', reason='Tussi needs it')
+            await ctx.guild.create_text_channel(name='income-calculator', reason='To use Tussi :3')
+        # Get Tussi to post her buttons
+        channel = nextcord.utils.get(ctx.guild.channels, name='tussi-role-assignment')
+        print(f'Tussi is ready to go on {ctx.guild.name}')
 
 
 def parse_roles_and_input(roles, inputs=None):
