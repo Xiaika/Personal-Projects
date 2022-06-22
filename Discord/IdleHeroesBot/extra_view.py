@@ -2,6 +2,8 @@ import nextcord
 import config
 from math import ceil
 
+# TODO: add privacy to the button
+
 EXTRA_VIEW_NAME = 'Extra_Button_View'
 
 

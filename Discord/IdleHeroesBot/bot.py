@@ -1,13 +1,18 @@
 import nextcord.ui
 from nextcord.ext import commands
 from math import ceil
-from config import BOT_TOKEN
+from config import BOT_TOKEN, INITIALIZE_ROLE_LIST, BOT_INTRO
 import voidcalc as vc
 from Role_Views.Options_Role_View import OptionsRoleView
 from Role_Views.Vip_Role_View import VipRoleView
 from Role_Views.Vortex_Role_View import VortexRoleView
 from Role_Views.Realms_Role_View import RealmsRoleView
 from extra_view import ExtraButtonView
+
+command_prefix = '!'
+
+# TODO: Make initializer calls only respond to me (owner)
+# TODO: have error handle for wrong role selections
 
 class Bot(commands.Bot):
     def __init__(self, *args, **kwargs):
@@ -31,7 +36,7 @@ class Bot(commands.Bot):
 intents = nextcord.Intents.default()
 intents.message_content = True
 
-client = Bot(command_prefix='!', intents=intents)
+client = Bot(command_prefix=command_prefix, intents=intents)
 
 
 @client.command()
@@ -39,28 +44,56 @@ async def options(ctx):
     view = OptionsRoleView()
     await ctx.send('Click a button to get a role. Click again to remove a role.'
                    '\n**__Global Multipliers and Spheres__**', view=view)
-    await view.wait()
+
 
 
 @client.command()
 async def vip(ctx):
     view = VipRoleView()
     await ctx.send('\n**__VIP Level and Chest Preferences__**', view=view)
-    await view.wait()
 
 
 @client.command()
 async def vortex(ctx):
     view2 = VortexRoleView()
     await ctx.send('\n**__Vortex Tiers__**', view=view2)
-    await view2.wait()
 
 
 @client.command()
 async def realm(ctx):
     view3 = RealmsRoleView()
     await ctx.send('\n**__Realms Gate Corruption Levels__**', view=view3)
-    await view3.wait()
+
+@client.command()
+async def tussi(ctx):
+    await ctx.send(BOT_INTRO)
+    await options(ctx)
+    await vip(ctx)
+    await vortex(ctx)
+    await realm(ctx)
+
+
+@client.command()
+async def initialize(ctx: nextcord.ext.commands.Context):
+    """Initializes the bot on a new server"""
+    for initial_role in INITIALIZE_ROLE_LIST:
+        name = initial_role[0]
+        color = initial_role[1]
+        for role in ctx.guild.roles:
+            if name == role.name:
+                print('ROLE ALREADY EXISTS')
+                break
+        else:
+            if color == 0:
+                await ctx.guild.create_role(name=name, reason='Tussi needs it')
+            else:
+                await ctx.guild.create_role(name=name, color=nextcord.Color(color), reason='Tussi needs it')
+
+    await ctx.guild.create_text_channel(name='tussi-role-assignment', reason='Tussi needs it')
+    await ctx.guild.create_text_channel(name='income-calculator', reason='To use Tussi :3')
+    # Get Tussi to post her buttons
+    channel = nextcord.utils.get(ctx.guild.channels, name='tussi-role-assignment')
+    print(f'Tussi is ready to go on {ctx.guild.name}')
 
 
 def parse_roles_and_input(roles, inputs=None):
@@ -143,6 +176,7 @@ def goal_time(cot, stellar):
     cot_goal = 5000000
     stellar_goal = 4935000
     return ceil(cot_goal / cot), ceil(stellar_goal / stellar)
+
 
 @client.command()
 async def voidcalc(ctx, *args):
