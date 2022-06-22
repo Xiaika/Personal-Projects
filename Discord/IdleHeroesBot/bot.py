@@ -41,7 +41,7 @@ client = Bot(command_prefix=command_prefix, intents=intents)
 
 @client.command()
 async def options(ctx):
-    if ctx.message.author.id == 832430593505361950:
+    if ctx.message.author.id == 225760022737584128:
         view = OptionsRoleView()
         await ctx.send('Click a button to get a role. Click again to remove a role.'
                        '\n**__Global Multipliers and Spheres__**', view=view)
